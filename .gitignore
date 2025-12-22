@@ -1,0 +1,23 @@
+# Compiled binaries
+daxpy
+select
+*.exe
+*.o
+*.obj
+*.out
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Python cache
+__pycache__/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code / IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
