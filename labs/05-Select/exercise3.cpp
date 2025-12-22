@@ -36,10 +36,20 @@ template<class UnaryPredicate>
 void select(const std::vector<int>& v, UnaryPredicate pred,
             std::vector<size_t>& index, std::vector<int>& w)
 {
-    // TODO: write a parallelizable version of select, just as for exercise 1.
-    // But this time:
-    // - accept index and w as inputs to allow re-using the buffers
-    // - use transform_inclusive_scan to reduce the number of steps from 3 to 2.   
+    // transform_inclusive_scan first filters the data with a "transform" operation
+    // and then computes an inclusive cumulative operation (here a sum).
+    index.resize(v.size());
+    std::transform_inclusive_scan(std::execution::par_unseq, v.begin(), v.end(), index.begin(), std::plus<size_t>{},
+                                  [pred](int x) { return pred(x) ? 1 : 0; });
+
+    size_t numElem = index.empty() ? 0 : index.back();
+    w.resize(numElem);
+
+    auto ints = std::views::iota(0, (int)v.size());
+    std::for_each(std::execution::par_unseq, ints.begin(), ints.end(),
+        [pred, v=v.data(), w=w.data(), index=index.data()](int i) {
+            if (pred(v[i])) w[index[i] - 1] = v[i];
+    });
 }
 
 // Initialize vector
