@@ -27,8 +27,8 @@
 #include <limits>
 #include <string>
 #include <vector>
+#include <algorithm>
 // TODO: add C++ standard library includes as necessary
-// #include <...>
 
 /// Intialize vectors `x` and `y`: raw loop sequential version
 void initialize(std::vector<double> &x, std::vector<double> &y) {
@@ -42,8 +42,8 @@ void initialize(std::vector<double> &x, std::vector<double> &y) {
 /// DAXPY: AX + Y: sequential algorithm version
 void daxpy(double a, std::vector<double> const &x, std::vector<double> &y) {
   assert(x.size() == y.size());
-  // TODO: Implement using SEQUENTIAL transform algorithm
-  // ...
+  std::transform(x.begin(), x.end(), y.begin(), y.begin(),
+                 [a](double xi, double yi) { return a * xi + yi; });
 }
 
 // Check solution
