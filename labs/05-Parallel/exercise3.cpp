@@ -29,25 +29,25 @@
 #include <string>
 #include <vector>
 #include <ranges>
-// TODO: add C++ standard library includes as necessary
-// #include <...>
+#include <execution>
+// DONE: add C++ standard library includes as necessary
 
 /// Intialize vectors `x` and `y`: parallel algorithm version
 void initialize(std::vector<double> &x, std::vector<double> &y) {
   assert(x.size() == y.size());
-  // TODO: Parallelize initialization of `x`
+  // DONE: Parallelize initialization of `x`
   auto ints = std::views::iota(0);
-  std::for_each_n(ints.begin(), x.size(), [&x](int i) { x[i] = (double)i; });
-  // TODO: Parallelize initialization of `y`
-  std::fill_n(y.begin(), y.size(), 2.);
+  std::for_each_n(std::execution::par_unseq, ints.begin(), x.size(), [x = x.data()](int i) { x[i] = (double)i; });
+  // DONE: Parallelize initialization of `y`
+  std::fill_n(std::execution::par_unseq, y.begin(), y.size(), 2.);
 }
 
 /// DAXPY: AX + Y: sequential algorithm version
 void daxpy(double a, std::vector<double> const &x, std::vector<double> &y) {
   assert(x.size() == y.size());
-  /// TODO: Parallelize DAXPY computation
-  std::transform(x.begin(), x.end(), y.begin(), y.begin(),
-                 [&](double x, double y) { return a * x + y; });
+  /// DONE: Parallelize DAXPY computation
+  std::transform(std::execution::par_unseq, x.begin(), x.end(), y.begin(), y.begin(),
+                 [a](double x, double y) { return a * x + y; });
 }
 
 // Check solution
